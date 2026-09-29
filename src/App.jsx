@@ -43,24 +43,42 @@ export default function App() {
   });
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', backgroundColor: '#f9f9f9', padding: '20px' }}>
-      <header style={{ textAlign: 'center', marginBottom: '30px' }}>
-        <h1 style={{ color: '#333' }}>📖 Recetario Digital</h1>
-        <p style={{ color: '#666' }}>Encuentra y guarda tus recetas favoritas</p>
+    <div style={{ minHeight: '100vh', padding: '30px 20px', maxWidth: '1200px', margin: '0 auto' }}>
+      <header style={{ textAlign: 'center', marginBottom: '40px' }}>
+        <span style={{ 
+          backgroundColor: '#e8efe6', 
+          color: 'var(--primary)', 
+          padding: '6px 16px', 
+          borderRadius: '20px', 
+          fontSize: '14px', 
+          fontWeight: '600',
+          letterSpacing: '0.5px'
+        }}>
+          RECETARIO EXCLUSIVO
+        </span>
+        <h1 style={{ color: 'var(--text-dark)', fontSize: '2.5rem', margin: '15px 0 8px 0', fontWeight: '700' }}>
+          Colección Gastronómica
+        </h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', marginTop: 0 }}>
+          Descubre preparaciones seleccionadas paso a paso
+        </p>
         
         <button
           onClick={() => setSoloFavoritos(!soloFavoritos)}
           style={{
-            padding: '10px 15px',
-            backgroundColor: soloFavoritos ? '#ff4d4d' : '#28a745',
+            padding: '10px 22px',
+            backgroundColor: soloFavoritos ? 'var(--accent)' : 'var(--primary)',
             color: '#fff',
             border: 'none',
-            borderRadius: '5px',
+            borderRadius: '8px',
             cursor: 'pointer',
-            marginTop: '10px'
+            marginTop: '15px',
+            fontWeight: '600',
+            fontSize: '14px',
+            transition: 'all 0.2s ease'
           }}
         >
-          {soloFavoritos ? 'Ver Todas las Recetas' : `Ver mis Favoritos (${favoritos.length})`}
+          {soloFavoritos ? '← Ver Todas las Recetas' : `Ver mis Favoritos (${favoritos.length})`}
         </button>
       </header>
 
@@ -75,7 +93,9 @@ export default function App() {
         )}
 
         {cargando ? (
-          <p style={{ textAlign: 'center', fontSize: '18px', marginTop: '40px' }}>⏳ Cargando recetas...</p>
+          <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '18px', marginTop: '60px' }}>
+            Cargando recetario...
+          </p>
         ) : (
           <ListaRecetas
             recetas={recetasFiltradas}
