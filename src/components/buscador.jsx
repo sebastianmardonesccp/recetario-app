@@ -25,4 +25,3 @@ export default function Buscador({ busqueda, setBusqueda, categoria, setCategori
     </div>
   );
 } 
-</select>
