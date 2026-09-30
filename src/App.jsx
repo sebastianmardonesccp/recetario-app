@@ -6,7 +6,6 @@ import ModalDetalle from './components/ModalDetalle';
 import recetasIniciales from './data/recetas.json';
 
 export default function App() {
-  // ¡Asegúrate de que empiece en true!
   const [mostrarBienvenida, setMostrarBienvenida] = useState(true);
   const [recetas, setRecetas] = useState([]);
   const [busqueda, setBusqueda] = useState('');
@@ -19,7 +18,7 @@ export default function App() {
     try {
       const guardados = localStorage.getItem('recetas_favoritas');
       return guardados ? JSON.parse(guardados) : [];
-    } catch (error) {
+    } catch {
       return [];
     }
   });
@@ -36,7 +35,7 @@ export default function App() {
     try {
       localStorage.setItem('recetas_favoritas', JSON.stringify(favoritos));
     } catch (error) {
-      console.error(error);
+      console.error('Error guardando favoritos en localStorage:', error);
     }
   }, [favoritos]);
 
@@ -46,7 +45,7 @@ export default function App() {
     );
   };
 
-  const recetasFiltradas = (recetas || []).filter((receta) => {
+  const recetasFiltradas = recetas.filter((receta) => {
     const coincideBusqueda =
       receta.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
       receta.ingredientes.some((ing) => ing.toLowerCase().includes(busqueda.toLowerCase()));
@@ -57,7 +56,6 @@ export default function App() {
     return coincideBusqueda && coincideCategoria && coincideFavorito;
   });
 
-  // Renderizado condicional: Muestra la pantalla inicial
   if (mostrarBienvenida) {
     return <Bienvenida enComenzar={() => setMostrarBienvenida(false)} />;
   }
@@ -113,7 +111,7 @@ export default function App() {
             recetas={recetasFiltradas}
             favoritos={favoritos}
             toggleFavorito={toggleFavorito}
-            seleccionarReceta={(receta) => setRecetaSeleccionada(receta)}
+            seleccionarReceta={setRecetaSeleccionada}
           />
         )}
       </main>
