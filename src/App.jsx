@@ -12,13 +12,13 @@ export default function App() {
   const [soloFavoritos, setSoloFavoritos] = useState(false);
   const [cargando, setCargando] = useState(true);
 
-  // Inicializar favoritos leyendo desde localStorage si existen
+  // Cargar favoritos guardados en localStorage
   const [favoritos, setFavoritos] = useState(() => {
     const favoritosGuardados = localStorage.getItem('recetas_favoritas');
     return favoritosGuardados ? JSON.parse(favoritosGuardados) : [];
   });
 
-  // Simulación de carga de datos mediante useEffect
+  // Simular la carga de datos
   useEffect(() => {
     const timer = setTimeout(() => {
       setRecetas(recetasIniciales);
@@ -28,7 +28,7 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Guardar en localStorage cada vez que el estado de favoritos cambie
+  // Guardar en localStorage ante cambios en favoritos
   useEffect(() => {
     localStorage.setItem('recetas_favoritas', JSON.stringify(favoritos));
   }, [favoritos]);
@@ -41,6 +41,7 @@ export default function App() {
     );
   };
 
+  // Filtrado combinado: búsqueda + categoría + vista de favoritos
   const recetasFiltradas = recetas.filter((receta) => {
     const coincideBusqueda = receta.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
       receta.ingredientes.some(ing => ing.toLowerCase().includes(busqueda.toLowerCase()));
@@ -53,7 +54,7 @@ export default function App() {
 
   return (
     <div style={{ minHeight: '100vh', padding: '30px 20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <header style={{ textAlign: 'center', marginBottom: '40px' }}>
+      <header style={{ textAlign: 'center', marginBottom: '30px' }}>
         <span style={{ 
           backgroundColor: '#e8efe6', 
           color: 'var(--primary)', 
@@ -66,10 +67,12 @@ export default function App() {
           RECETARIO EXCLUSIVO
         </span>
         <h1 style={{ color: 'var(--text-dark)', fontSize: '2.5rem', margin: '15px 0 8px 0', fontWeight: '700' }}>
-          Colección Gastronómica
+          {soloFavoritos ? 'Mis Recetas Guardadas' : 'Colección Gastronómica'}
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', marginTop: 0 }}>
-          Descubre preparaciones seleccionadas paso a paso
+          {soloFavoritos 
+            ? 'Explora y filtra únicamente los platillos que has marcado como favoritos' 
+            : 'Descubre preparaciones seleccionadas paso a paso'}
         </p>
         
         <button
@@ -92,18 +95,23 @@ export default function App() {
       </header>
 
       <main>
-        {!soloFavoritos && (
-          <Buscador
-            busqueda={busqueda}
-            setBusqueda={setBusqueda}
-            categoria={categoria}
-            setCategoria={setCategoria}
-          />
-        )}
+        {/* El buscador permanece visible en la vista general y en Favoritos */}
+        <Buscador
+          busqueda={busqueda}
+          setBusqueda={setBusqueda}
+          categoria={categoria}
+          setCategoria={setCategoria}
+        />
 
         {cargando ? (
           <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '18px', marginTop: '60px' }}>
             Cargando recetario...
+          </p>
+        ) : recetasFiltradas.length === 0 ? (
+          <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '16px', marginTop: '40px' }}>
+            {soloFavoritos 
+              ? 'No tienes recetas favoritas que coincidan con tu búsqueda o filtro.' 
+              : 'No se encontraron recetas con los criterios ingresados.'}
           </p>
         ) : (
           <ListaRecetas
