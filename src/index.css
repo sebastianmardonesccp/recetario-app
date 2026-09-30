@@ -1,20 +1,358 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg-main: #f8f6f0;
-  --bg-card: #ffffff;
   --primary: #2d5a27;
   --primary-hover: #1e3d1a;
   --accent: #c86d51;
+  --bg-main: #f8f6f0;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
   --text-dark: #1f2421;
   --text-muted: #667068;
   --border-color: #e2ded4;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.12);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   background-color: var(--bg-main);
   color: var(--text-dark);
+  line-height: 1.5;
+}
+
+/* Keyframes para animaciones de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   2. ESTRUCTURA CON MENÚ LATERAL (LAYOUT)
+   ========================================================================== */
+.layout-contenedor {
+  display: flex;
+  min-height: 100vh;
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Sidebar / Menú Lateral */
+.sidebar {
+  width: 320px;
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-color);
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  flex-shrink: 0;
+}
+
+.sidebar-header .badge {
+  background-color: #e8efe6;
+  color: var(--primary);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-header h2 {
+  margin: 10px 0 0 0;
+  font-size: 1.6rem;
+  color: var(--text-dark);
+  font-weight: 800;
+}
+
+.seccion-sidebar h3 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+}
+
+/* Botón Favoritos en la Sidebar */
+.btn-favoritos {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--primary);
+  background-color: transparent;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-favoritos:hover,
+.btn-favoritos.activo {
+  background-color: var(--primary);
+  color: #ffffff;
+}
+
+/* Área de Contenido Principal */
+.contenido-principal {
+  flex: 1;
+  padding: 40px;
+  max-width: 1300px;
+}
+
+.header-principal h1 {
+  margin: 0 0 8px 0;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.header-principal p {
+  margin: 0 0 32px 0;
+  color: var(--text-muted);
+  font-size: 1.05rem;
+}
+
+.mensaje-estado {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  margin-top: 60px;
+}
+
+/* ==========================================================================
+   3. BUSCADOR Y FILTROS EN SIDEBAR
+   ========================================================================== */
+.buscador-contenedor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.campo-busqueda {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.campo-busqueda:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.1);
+}
+
+.select-categoria {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background-color: #fff;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.select-categoria:focus {
+  border-color: var(--primary);
+}
+
+/* ==========================================================================
+   4. TARJETAS Y LISTA DE RECETAS
+   ========================================================================== */
+.grid-recetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.tarjeta-receta {
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.tarjeta-receta:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.imagen-tarjeta {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.btn-favorito-icono {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease;
+}
+
+.btn-favorito-icono:hover {
+  transform: scale(1.1);
+}
+
+.contenido-tarjeta {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.categoria-tag {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--primary);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.titulo-receta {
+  margin: 0 0 10px 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.descripcion-receta {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0 0 16px 0;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.btn-ver-mas {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-dark);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-ver-mas:hover {
+  background-color: #e8efe6;
+  color: var(--primary);
+}
+
+/* ==========================================================================
+   5. MODAL DE DETALLES
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-contenido {
+  background-color: #ffffff;
+  border-radius: 16px;
+  max-width: 650px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  padding: 28px;
+}
+
+.btn-cerrar-modal {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.btn-cerrar-modal:hover {
+  background-color: #e5e7eb;
+}
+
+/* ==========================================================================
+   6. RESPONSIVIDAD (MÓVILES)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .layout-contenedor {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 20px;
+  }
+
+  .contenido-principal {
+    padding: 20px;
+  }
+
+  .grid-recetas {
+    grid-template-columns: 1fr;
+  }
 }
