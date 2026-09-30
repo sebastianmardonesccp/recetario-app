@@ -6,6 +6,7 @@ import ModalDetalle from './components/ModalDetalle';
 import recetasIniciales from './data/recetas.json';
 
 export default function App() {
+  // ¡Asegúrate de que empiece en true!
   const [mostrarBienvenida, setMostrarBienvenida] = useState(true);
   const [recetas, setRecetas] = useState([]);
   const [busqueda, setBusqueda] = useState('');
@@ -56,13 +57,13 @@ export default function App() {
     return coincideBusqueda && coincideCategoria && coincideFavorito;
   });
 
+  // Renderizado condicional: Muestra la pantalla inicial
   if (mostrarBienvenida) {
     return <Bienvenida enComenzar={() => setMostrarBienvenida(false)} />;
   }
 
   return (
     <div className="layout-contenedor">
-      {/* Menú Lateral / Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-header">
           <span className="badge">RECETARIO</span>
@@ -89,7 +90,6 @@ export default function App() {
         </div>
       </aside>
 
-      {/* Área Principal de Contenido */}
       <main className="contenido-principal">
         <header className="header-principal">
           <h1>{soloFavoritos ? 'Mis Recetas Guardadas' : 'Colección Gastronómica'}</h1>
