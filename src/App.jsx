@@ -2,42 +2,51 @@ import React, { useState, useEffect } from 'react';
 import Buscador from './components/Buscador';
 import ListaRecetas from './components/ListaRecetas';
 import ModalDetalle from './components/ModalDetalle';
-import recetasData from './data/recetas.json';
+import recetasIniciales from './data/recetas.json';
 
 export default function App() {
-  // Estados principales
   const [recetas, setRecetas] = useState([]);
-  const [cargando, setCargando] = useState(true);
   const [busqueda, setBusqueda] = useState('');
   const [categoria, setCategoria] = useState('Todas');
-  const [favoritos, setFavoritos] = useState([]);
   const [recetaSeleccionada, setRecetaSeleccionada] = useState(null);
   const [soloFavoritos, setSoloFavoritos] = useState(false);
+  const [cargando, setCargando] = useState(true);
 
-  // Petición simulada de datos con useEffect
+  // Inicializar favoritos leyendo desde localStorage si existen
+  const [favoritos, setFavoritos] = useState(() => {
+    const favoritosGuardados = localStorage.getItem('recetas_favoritas');
+    return favoritosGuardados ? JSON.parse(favoritosGuardados) : [];
+  });
+
+  // Simulación de carga de datos mediante useEffect
   useEffect(() => {
     const timer = setTimeout(() => {
-      setRecetas(recetasData);
+      setRecetas(recetasIniciales);
       setCargando(false);
-    }, 1000); // Simula 1 segundo de carga de red
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
 
-  // Función para agregar o quitar de favoritos
+  // Guardar en localStorage cada vez que el estado de favoritos cambie
+  useEffect(() => {
+    localStorage.setItem('recetas_favoritas', JSON.stringify(favoritos));
+  }, [favoritos]);
+
   const toggleFavorito = (id) => {
-    if (favoritos.includes(id)) {
-      setFavoritos(favoritos.filter((favId) => favId !== id));
-    } else {
-      setFavoritos([...favoritos, id]);
-    }
+    setFavoritos((prevFavs) =>
+      prevFavs.includes(id)
+        ? prevFavs.filter((favId) => favId !== id)
+        : [...prevFavs, id]
+    );
   };
 
-  // Filtrado dinámico por búsqueda, categoría y pestaña de favoritos
   const recetasFiltradas = recetas.filter((receta) => {
-    const coincideBusqueda = receta.nombre.toLowerCase().includes(busqueda.toLowerCase());
+    const coincideBusqueda = receta.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+      receta.ingredientes.some(ing => ing.toLowerCase().includes(busqueda.toLowerCase()));
+    
     const coincideCategoria = categoria === 'Todas' || receta.categoria === categoria;
-    const coincideFavorito = soloFavoritos ? favoritos.includes(receta.id) : true;
+    const coincideFavorito = !soloFavoritos || favoritos.includes(receta.id);
 
     return coincideBusqueda && coincideCategoria && coincideFavorito;
   });
