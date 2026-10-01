@@ -17,10 +17,10 @@ export default function Buscador({ busqueda, setBusqueda, categoria, setCategori
         className="select-categoria"
       >
         <option value="Todas">Todas las Categorías</option>
-        <option value="Desayuno">Desayuno</option>
-        <option value="Plato Principal">Plato Principal</option>
-        <option value="Postre">Postre</option>
-        <option value="Ensalada">Ensalada</option>
+        <option value="Pastas">Pastas</option>
+        <option value="Rápida">Rapida</option>
+        <option value="Postres">Postres</option>
+        <option value="Ensaladas">Ensaladas</option>
       </select>
     </div>
   );
